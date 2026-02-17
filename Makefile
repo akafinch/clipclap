@@ -6,10 +6,13 @@ all: setup samples
 # Full setup
 setup: setup-backend setup-frontend
 
+# Python command (override with: make setup-backend PYTHON=python3.11)
+PYTHON ?= python3
+
 # Backend setup
 setup-backend:
 	@echo "Setting up Python backend..."
-	cd backend && python -m venv venv
+	cd backend && $(PYTHON) -m venv venv
 	cd backend && ./venv/bin/pip install --upgrade pip setuptools wheel
 	cd backend && ./venv/bin/pip install -r requirements.txt
 	@echo "Backend setup complete!"
