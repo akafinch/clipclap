@@ -10,7 +10,7 @@ setup: setup-backend setup-frontend
 setup-backend:
 	@echo "Setting up Python backend..."
 	cd backend && python -m venv venv
-	cd backend && ./venv/bin/pip install --upgrade pip
+	cd backend && ./venv/bin/pip install --upgrade pip setuptools wheel
 	cd backend && ./venv/bin/pip install -r requirements.txt
 	@echo "Backend setup complete!"
 

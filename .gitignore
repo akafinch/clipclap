@@ -82,3 +82,6 @@ logs/
 htmlcov/
 .pytest_cache/
 .tox/
+
+# Local docs (shared manually)
+docs/
