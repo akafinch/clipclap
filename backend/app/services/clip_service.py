@@ -2,7 +2,7 @@ import time
 from typing import List, Tuple
 from io import BytesIO
 import torch
-import clip
+import open_clip
 from PIL import Image
 
 
@@ -10,6 +10,7 @@ class CLIPService:
     _instance = None
     _model = None
     _preprocess = None
+    _tokenizer = None
     _device = None
     _model_load_time_ms: float = 0.0
 
@@ -25,7 +26,15 @@ class CLIPService:
     def _load_model(self):
         start_time = time.perf_counter()
         self._device = "cuda" if torch.cuda.is_available() else "cpu"
-        self._model, self._preprocess = clip.load("ViT-B/32", device=self._device)
+
+        # Load OpenCLIP model (ViT-B-32 with OpenAI's pretrained weights)
+        self._model, _, self._preprocess = open_clip.create_model_and_transforms(
+            'ViT-B-32', pretrained='openai'
+        )
+        self._model = self._model.to(self._device)
+        self._model.eval()
+        self._tokenizer = open_clip.get_tokenizer('ViT-B-32')
+
         self._model_load_time_ms = (time.perf_counter() - start_time) * 1000
         print(f"CLIP model loaded on {self._device} in {self._model_load_time_ms:.2f}ms")
 
@@ -66,7 +75,7 @@ class CLIPService:
 
         # Encode text labels
         text_start = time.perf_counter()
-        text_tokens = clip.tokenize(labels).to(self._device)
+        text_tokens = self._tokenizer(labels).to(self._device)
         with torch.no_grad():
             text_features = self._model.encode_text(text_tokens)
             text_features /= text_features.norm(dim=-1, keepdim=True)

@@ -14,7 +14,6 @@ setup-backend:
 	@echo "Setting up Python backend..."
 	cd backend && $(PYTHON) -m venv venv
 	cd backend && ./venv/bin/pip install --upgrade pip setuptools wheel
-	cd backend && ./venv/bin/pip install --no-build-isolation --no-use-pep517 git+https://github.com/openai/CLIP.git
 	cd backend && ./venv/bin/pip install -r requirements.txt
 	@echo "Backend setup complete!"
 
